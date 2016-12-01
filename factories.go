@@ -3,24 +3,30 @@ package main
 import (
 	"os"
 
-	"github.com/admiralobvious/tinysyslog/filters"
-	"github.com/admiralobvious/tinysyslog/mutators"
-	"github.com/admiralobvious/tinysyslog/sinks"
+	"github.com/clearbit/tinysyslog/filters"
+	"github.com/clearbit/tinysyslog/mutators"
+	"github.com/clearbit/tinysyslog/sinks"
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/spf13/viper"
 )
 
 // SinkFactory creates a new object with sinks.Sink interface
-func SinkFactory() sinks.Sink {
+func SinkFactory() (sinks.Sink, error) {
 	sinkType := viper.GetString("sink-type")
+
+	if sinkType == "cloudwatchlogs" {
+		logGroup := viper.GetString("cloudwatchlogs-log-group")
+		return sinks.NewCloudwatchSink(logGroup)
+	}
+
 	filename := viper.GetString("filesystem-filename")
 	maxAge := viper.GetInt("filesystem-max-age")
 	maxBackups := viper.GetInt("filesystem-max-backups")
 	maxSize := viper.GetInt("filesystem-max-size")
 
 	if sinkType == "filesystem" {
-		return sinks.NewFilesystemSink(filename, maxAge, maxBackups, maxSize)
+		return sinks.NewFilesystemSink(filename, maxAge, maxBackups, maxSize), nil
 	}
 
 	output := viper.GetString("console-output")
@@ -34,11 +40,11 @@ func SinkFactory() sinks.Sink {
 		} else {
 			log.Warningf("Unknown console output type '%s'. Falling back to 'stdout'", output)
 		}
-		return sinks.NewConsoleSink(stdOutput)
+		return sinks.NewConsoleSink(stdOutput), nil
 	}
 
 	log.Warningf("Unknown sink type '%s'. Falling back to 'filesystem'", sinkType)
-	return sinks.NewFilesystemSink(filename, maxAge, maxBackups, maxSize)
+	return sinks.NewFilesystemSink(filename, maxAge, maxBackups, maxSize), nil
 }
 
 // MutatorFactory creates a new object with mutators.Mutator interface

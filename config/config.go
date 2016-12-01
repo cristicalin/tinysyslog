@@ -9,17 +9,18 @@ import (
 
 // Config holds all configuration for our program
 type Config struct {
-	Address        string
-	ConsoleSink    ConsoleSink
-	FilesystemSink FilesystemSink
-	FilterType     string
-	LogFile        string
-	LogFormat      string
-	LogLevel       string
-	MutatorType    string
-	RegexFilter    RegexFilter
-	SinkType       string
-	SocketType     string
+	Address            string
+	ConsoleSink        ConsoleSink
+	FilesystemSink     FilesystemSink
+	CloudwatchlogsSink CloudwatchlogsSink
+	FilterType         string
+	LogFile            string
+	LogFormat          string
+	LogLevel           string
+	MutatorType        string
+	RegexFilter        RegexFilter
+	SinkType           string
+	SocketType         string
 }
 
 // ConsoleSink holds all configuration for the ConsoleSink sink
@@ -34,6 +35,11 @@ type FilesystemSink struct {
 	MaxBackups   int
 	MaxSize      int
 	OutputFormat string
+}
+
+// CloudwatchlogsSink holds all configuration for the CloudwatchlogsSink sink
+type CloudwatchlogsSink struct {
+	LogGroup string
 }
 
 // RegexFilter holds regex configuration
@@ -53,6 +59,9 @@ func NewConfig() *Config {
 			MaxAge:     30,
 			MaxBackups: 10,
 			MaxSize:    100,
+		},
+		CloudwatchlogsSink: CloudwatchlogsSink{
+			LogGroup: "Logs",
 		},
 		FilterType:  "regex",
 		LogFile:     "tinysyslog.log",
@@ -79,6 +88,7 @@ func (cnf *Config) AddFlags(fs *pflag.FlagSet) {
 	fs.IntVar(&cnf.FilesystemSink.MaxBackups, "filesystem-max-backups", cnf.FilesystemSink.MaxBackups, "Maximum backups to keep.")
 	fs.IntVar(&cnf.FilesystemSink.MaxSize, "filesystem-max-size", cnf.FilesystemSink.MaxSize,
 		"Maximum log size (in megabytes) before it's rotated.")
+	fs.StringVar(&cnf.CloudwatchlogsSink.LogGroup, "cloudwatchlogs-log-group", cnf.CloudwatchlogsSink.LogGroup, "Log Group to stream to.")
 	fs.StringVar(&cnf.FilterType, "filter-type", cnf.FilterType, "Filter to filter logs with. Valid filters are: regex.")
 	fs.StringVar(&cnf.LogFile, "log-file", cnf.LogFile, "The log file to write to. "+
 		"'stdout' means log to stdout and 'stderr' means log to stderr.")
@@ -102,6 +112,10 @@ func wordSepNormalizeFunc(f *pflag.FlagSet, name string) pflag.NormalizedName {
 
 // InitFlags normalizes and parses the command line flags
 func (cnf *Config) InitFlags() {
+	viper.SetEnvPrefix("tinysyslog")
+	viper.AutomaticEnv()
+	replacer := strings.NewReplacer("-", "_")
+	viper.SetEnvKeyReplacer(replacer)
 	viper.BindPFlags(pflag.CommandLine)
 	pflag.CommandLine.SetNormalizeFunc(wordSepNormalizeFunc)
 	pflag.Parse()

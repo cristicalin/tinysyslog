@@ -33,15 +33,18 @@ Usage of ./tinysyslog:
       --filesystem-max-age int       Maximum age (in days) before a log is deleted. (default 30)
       --filesystem-max-backups int   Maximum backups to keep. (default 10)
       --filesystem-max-size int      Maximum log size (in megabytes) before it's rotated. (default 100)
+      --cloudwatchlogs-log-group     Cloudwatch Log Group to stream to.
       --filter-type string           Filter to filter logs with. Valid filters are: regex. (default "regex")
       --log-file string              The log file to write to. 'stdout' means log to stdout and 'stderr' means log to stderr. (default "tinysyslog.log")
       --log-format string            The log format. Valid format values are: text, json. (default "text")
       --log-level string             The granularity of log outputs. Valid level names are: debug, info, warning, error and critical. (default "info")
       --mutator-type string          Mutator type to use. Valid mutators are: text, json. (default "text")
       --regex-filter string          Regex to filter with. No filtering by default.
-      --sink-type string             Sink to save logs to. Valid sinks are: console, filesystem. (default "filesystem")
+      --sink-type string             Sink to save logs to. Valid sinks are: console, filesystem, cloudwatchlogs. (default "filesystem")
       --socket-type string           Type of socket to use, TCP or UDP. If no type is specified, both are used.
 ```
+
+If you are using the cloudwatchlogs sink you should ensure that you have valid AWS credentials in the environment.
 
 ## Benchmarks
 Nothing scientific here but with a simple client consisting of a for loop sending large messages as fast as possible over UDP:

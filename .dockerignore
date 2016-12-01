@@ -1,8 +1,5 @@
-*.log
 .git
 .gitignore
-.idea
 LICENSE
 README
 tinysyslog
-vendor

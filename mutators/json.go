@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"time"
 
-	"github.com/admiralobvious/tinysyslog/util"
+	"github.com/clearbit/tinysyslog/util"
 )
 
 // JSONMutator represents a JSON mutator

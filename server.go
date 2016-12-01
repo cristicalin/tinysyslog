@@ -49,8 +49,11 @@ func (s *Server) Run() error {
 	server.Boot()
 	log.Infof("tinysyslog listening on %s", address)
 
+	sink, err := SinkFactory()
+	if err != nil {
+		log.Fatalln(err)
+	}
 	filter := FilterFactory()
-	sink := SinkFactory()
 	mutator := MutatorFactory()
 
 	go func(channel syslog.LogPartsChannel) {

@@ -3,7 +3,7 @@ package main
 import (
 	"strings"
 
-	"github.com/admiralobvious/tinysyslog/config"
+	"github.com/clearbit/tinysyslog/config"
 
 	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
