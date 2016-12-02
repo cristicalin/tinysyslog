@@ -52,15 +52,19 @@ func MutatorFactory() mutators.Mutator {
 	mutatorType := viper.GetString("mutator-type")
 
 	if mutatorType == "text" {
-		return mutators.NewTextMutator()
+		return mutators.NewTextMutator(viper.GetString("syslog-format"))
 	}
 
 	if mutatorType == "json" {
 		return mutators.NewJSONMutator()
 	}
 
+	if mutatorType == "message" {
+		return mutators.NewMessageMutator(viper.GetString("syslog-format"))
+	}
+
 	log.Warningf("Unknown mutator type '%s'. Falling back to 'text'", mutatorType)
-	return mutators.NewTextMutator()
+	return mutators.NewTextMutator(viper.GetString("syslog-format"))
 }
 
 // FilterFactory creates a new object with filters.Filter interface
