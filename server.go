@@ -23,7 +23,15 @@ func (s *Server) Run() error {
 	handler := syslog.NewChannelHandler(channel)
 
 	server := syslog.NewServer()
-	server.SetFormat(syslog.RFC5424)
+	switch viper.GetString("syslog-format") {
+	case "3164":
+		server.SetFormat(syslog.RFC3164)
+	case "5424":
+		server.SetFormat(syslog.RFC5424)
+	default:
+		log.Fatalf("Unknown RFC format %s", viper.GetString("syslog-format"))
+	}
+
 	server.SetHandler(handler)
 
 	address := viper.GetString("address")

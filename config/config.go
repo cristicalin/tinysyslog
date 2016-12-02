@@ -21,6 +21,7 @@ type Config struct {
 	RegexFilter        RegexFilter
 	SinkType           string
 	SocketType         string
+	SyslogFormat       string
 }
 
 // ConsoleSink holds all configuration for the ConsoleSink sink
@@ -71,8 +72,9 @@ func NewConfig() *Config {
 		RegexFilter: RegexFilter{
 			Regex: "",
 		},
-		SinkType:   "filesystem",
-		SocketType: "",
+		SinkType:     "filesystem",
+		SocketType:   "",
+		SyslogFormat: "5424",
 	}
 	return &cnf
 }
@@ -100,6 +102,7 @@ func (cnf *Config) AddFlags(fs *pflag.FlagSet) {
 	fs.StringVar(&cnf.SinkType, "sink-type", cnf.SinkType, "Sink to save logs to. Valid sinks are: console, filesystem.")
 	fs.StringVar(&cnf.SocketType, "socket-type", cnf.SocketType, "Type of socket to use, TCP or UDP."+
 		" If no type is specified, both are used.")
+	fs.StringVar(&cnf.SyslogFormat, "syslog-format", cnf.SyslogFormat, "Syslog RFC to accept. Valid values are: 3164, 5424.")
 }
 
 // wordSepNormalizeFunc changes all flags that contain "_" separators
