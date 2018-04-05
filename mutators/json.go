@@ -27,7 +27,7 @@ func (jm *JSONMutator) Mutate(logParts map[string]interface{}) string {
 		"severity":  util.SeverityNumToString(logParts["severity"].(int)),
 	}
 	// merge processed message
-	d := json.NewDecoder(strings.NewReader([]byte(logParts["message"].(string))))
+	d := json.NewDecoder(strings.NewReader(logParts["message"].(string)))
 	d.UseNumber()
 	var message interface{}
 	if err := d.Decode(&message); err != nil {
