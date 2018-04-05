@@ -34,7 +34,7 @@ func (jm *JSONMutator) Mutate(logParts map[string]interface{}) string {
 		m["message"] = logParts["message"]
 		m["error"] = err
 	} else {
-		m["message"] = haproxy
+		m["message"] = message
 	}
 	formatted, _ := json.Marshal(m)
 	return string(formatted)
