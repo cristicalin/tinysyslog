@@ -17,6 +17,8 @@ func NewJSONMutator() Mutator {
 
 // HAproxy JSON
 type HAProxy struct {
+	Type	       string `json:"type"`
+	Env            string `json:"env"`
 	Pid            int    `json:"pid"`
 	Actconn        int    `json:"actconn"`
 	Feconn         int    `json:"feconn"`
